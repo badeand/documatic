@@ -2,20 +2,11 @@ const path = require('path');
 const fs = require('fs');
 var crypto = require('crypto');
 var plantuml = require('node-plantuml');
-
-console.log("Running")
-
+var pandoc = require('node-pandoc');
 
 const state = {
   watchedFiles: []
 };
-
-
-// const statefile = "documatic_state.json";
-
-// let state = JSON.parse(fs.readFileSync(statefile).toString());
-
-console.log("")
 
 function extension(filename) {
   return filename.split(".").pop().toLowerCase();
@@ -33,18 +24,21 @@ function logGeneration(filename, targetExtension) {
   console.log(`[GENERATE]    ${filename} -> ${targetExtension}`);
 }
 
-function generatePlantUML(filename, format, targetExtension) {
 
-  let shortname = path.basename(filename).split(".")[0];
-
+function getTargetFile(filename, targetExtension) {
   let dir = path.dirname(filename)
   let gendir = path.join(dir, "g_");
   if (!fs.existsSync(gendir)) {
     fs.mkdirSync(gendir)
   }
 
-  targetFile = `${path.join(gendir, shortname)}.${targetExtension}`
-  deleteIfExist(path);
+  let shortname = path.basename(filename).split(".")[0];
+  return `${path.join(gendir, shortname)}.${targetExtension}`
+}
+
+function generatePlantUML(filename, format, targetExtension) {
+  const targetFile = getTargetFile(filename, targetExtension);
+  // deleteIfExist(targetFile);
   var gen = plantuml.generate(filename, {format: format})
   gen.out.pipe(fs.createWriteStream(targetFile))
   logGeneration(filename, targetExtension);
@@ -57,6 +51,26 @@ function generate(filename) {
   if (ext === "puml") {
     generatePlantUML(filename, 'svg', 'svg');
     generatePlantUML(filename, 'png', 'png');
+  }
+
+  if (ext === "md") {
+
+    let contents = fs.readFileSync(filename, 'utf8').toString();
+    let regexp = /!\[\]\((.*\.[a-zA-Z]*)\)/g;
+    let results = contents.matchAll(regexp);
+    for (let result of results) {
+      linkTrgt = result[1];
+      let trgt = path.join(path.dirname(path.resolve(filename)), linkTrgt);
+      console.log(trgt)
+      let relative = path.relative( filename, trgt );
+      contents = contents.replaceAll(linkTrgt, relative)
+    }
+
+    const targetFile = getTargetFile(filename, "md");
+
+    fs.writeFileSync(targetFile, contents);
+    console.log("Generate: TODO " + filename)
+
 
   }
 
@@ -67,7 +81,7 @@ function traverse(dir, a) {
   files.forEach(function (file) {
     let filename = path.join(dir, file);
     let lstatSync = fs.lstatSync(filename);
-    if (lstatSync.isDirectory()) {
+    if (lstatSync.isDirectory() && !filename.endsWith("g_")) {
       traverse(filename, a)
     }
     if (lstatSync.isFile() && fileOfInterest(filename)) {
@@ -78,15 +92,16 @@ function traverse(dir, a) {
 
 
 function fileOfInterest(filename) {
-  return extension(filename) === "puml";
+  return extension(filename) === "puml" ||
+    extension(filename) === "md";
 }
 
 function update(dir) {
 
-  allfiles = []
-  traverse(dir, allfiles);
+  filesOfInterest = []
+  traverse(dir, filesOfInterest);
 
-  allfiles.forEach(filename => {
+  filesOfInterest.forEach(filename => {
     let fileContentAsString = fs.readFileSync(filename).toString();
     let hash = crypto.createHash('md5').update(fileContentAsString).digest("hex");
 
@@ -109,6 +124,8 @@ function update(dir) {
       }
     }
   })
+
+  // console.log(filesOfInterest)
 }
 
 
@@ -117,6 +134,4 @@ update(base)
 setInterval(a => {
   update(base)
 }, 1500,)
-
-// fs.writeFileSync(statefile, JSON.stringify(state, null, 2));
 
