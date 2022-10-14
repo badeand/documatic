@@ -5,6 +5,7 @@
 (Use the application) as (Use)
 
 User -> (Start)
+User -> (Start)
 User --> (Use)
 
 Admin ---> (Use)
