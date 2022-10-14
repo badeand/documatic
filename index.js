@@ -3,6 +3,7 @@ const fs = require('fs');
 var crypto = require('crypto');
 var plantuml = require('node-plantuml');
 var pandoc = require('node-pandoc');
+var sleep = require('system-sleep');
 
 const state = {
   watchedFiles: []
@@ -40,8 +41,35 @@ function generatePlantUML(filename, format, targetExtension) {
   const targetFile = getTargetFile(filename, targetExtension);
   // deleteIfExist(targetFile);
   var gen = plantuml.generate(filename, {format: format})
-  gen.out.pipe(fs.createWriteStream(targetFile))
+  let writeStream = fs.createWriteStream(targetFile);
+  gen.out.pipe(writeStream)
+  finished = false;
+
+  gen.out.on('end', function () {
+    finished = true;
+  });
+
+  while (!finished) {
+    sleep(100);
+  }
+
   logGeneration(filename, targetExtension);
+}
+
+function generatePandoc(mdTargetFile, filename, targetExtension) {
+  src = mdTargetFile;
+  const docxTargetFile = getTargetFile(filename, targetExtension);
+  args = ['-f', 'markdown', '-t', targetExtension, '-o', docxTargetFile];
+  callback = function (err, result) {
+    if (err) {
+      console.error(err);
+    }
+    logGeneration(filename, targetExtension)
+    return result;
+  };
+  pandoc(src, args, callback);
+
+
 }
 
 function generate(filename) {
@@ -53,6 +81,7 @@ function generate(filename) {
     generatePlantUML(filename, 'png', 'png');
   }
 
+
   if (ext === "md") {
 
     let contents = fs.readFileSync(filename, 'utf8').toString();
@@ -62,15 +91,15 @@ function generate(filename) {
       linkTrgt = result[1];
       let trgt = path.join(path.dirname(path.resolve(filename)), linkTrgt);
       console.log(trgt)
-      let relative = path.relative( filename, trgt );
-      contents = contents.replaceAll(linkTrgt, relative)
+      let relative = path.relative(filename, trgt);
+      contents = contents.replaceAll(linkTrgt, trgt)
     }
 
-    const targetFile = getTargetFile(filename, "md");
-
-    fs.writeFileSync(targetFile, contents);
-    console.log("Generate: TODO " + filename)
-
+    const mdTargetFile = getTargetFile(filename, "md");
+    fs.writeFileSync(mdTargetFile, contents);
+    logGeneration(filename, "md")
+    generatePandoc(mdTargetFile, filename, "docx");
+    generatePandoc(mdTargetFile, filename, "pdf");
 
   }
 
@@ -100,6 +129,17 @@ function update(dir) {
 
   filesOfInterest = []
   traverse(dir, filesOfInterest);
+
+
+  filesOfInterest.sort(function (a, b) {
+    let eA = extension(a);
+    let eB = extension(b);
+
+    nA = eA === "puml" ? 1 : 10;
+    nB = eB === "puml" ? 1 : 10;
+
+    return nA - nB;
+  })
 
   filesOfInterest.forEach(filename => {
     let fileContentAsString = fs.readFileSync(filename).toString();

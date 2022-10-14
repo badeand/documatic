@@ -7,7 +7,7 @@ salt
   [This is my button]
   ()  Unchecked radio
   (X) Checked radio
-  (X) Checked radio
+
   []  Unchecked box
   "Enter text here   "
   ^This is a droplist^
