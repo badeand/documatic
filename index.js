@@ -17,6 +17,11 @@ const state = {
 
 console.log("")
 
+function extension(filename) {
+  return filename.split(".").pop().toLowerCase();
+}
+
+
 function deleteIfExist(path1) {
   try {
     fs.unlinkSync(path1)
@@ -28,7 +33,7 @@ function logGeneration(filename, targetExtension) {
   console.log(`[GENERATE]    ${filename} -> ${targetExtension}`);
 }
 
-function generatePlantUML(filename, sourceExtension, format, targetExtension) {
+function generatePlantUML(filename, format, targetExtension) {
 
   let shortname = path.basename(filename).split(".")[0];
 
@@ -45,11 +50,16 @@ function generatePlantUML(filename, sourceExtension, format, targetExtension) {
   logGeneration(filename, targetExtension);
 }
 
-function generate(filename, sourceExtension) {
+function generate(filename) {
 
+  let ext = extension(filename);
 
-  generatePlantUML(filename, sourceExtension, 'svg', 'svg');
-  generatePlantUML(filename, sourceExtension, 'png', 'png');
+  if (ext === "puml") {
+    generatePlantUML(filename, 'svg', 'svg');
+    generatePlantUML(filename, 'png', 'png');
+
+  }
+
 }
 
 function traverse(dir, a) {
@@ -60,10 +70,15 @@ function traverse(dir, a) {
     if (lstatSync.isDirectory()) {
       traverse(filename, a)
     }
-    if (lstatSync.isFile()) {
+    if (lstatSync.isFile() && fileOfInterest(filename)) {
       a.push(filename)
     }
   });
+}
+
+
+function fileOfInterest(filename) {
+  return extension(filename) === "puml";
 }
 
 function update(dir) {
@@ -72,38 +87,28 @@ function update(dir) {
   traverse(dir, allfiles);
 
   allfiles.forEach(filename => {
-    let lstatSync = fs.lstatSync(filename);
-    if (lstatSync.isFile()) {
+    let fileContentAsString = fs.readFileSync(filename).toString();
+    let hash = crypto.createHash('md5').update(fileContentAsString).digest("hex");
 
-      let sourceExtension = filename.split(".").pop().toLowerCase()
-      if (sourceExtension === "puml") {
+    var samefiles = state.watchedFiles.filter(a => {
+      return filename === a.filename
+    });
+    samefile = samefiles[0]
 
-        let fileContentAsString = fs.readFileSync(filename).toString();
-        let hash = crypto.createHash('md5').update(fileContentAsString).digest("hex");
+    if (!samefile) {
+      state.watchedFiles.push({
+        "filename": filename,
+        "hash": hash
+      })
+      generate(filename);
 
-        var samefiles = state.watchedFiles.filter(a => {
-          return filename === a.filename
-        });
-        samefile = samefiles[0]
-
-        if (!samefile) {
-          state.watchedFiles.push({
-            "filename": filename,
-            "hash": hash
-          })
-          generate(filename, sourceExtension);
-
-        } else {
-          if (!(samefile.hash === hash)) {
-            samefile.hash = hash
-            generate(filename, sourceExtension);
-          }
-        }
+    } else {
+      if (!(samefile.hash === hash)) {
+        samefile.hash = hash
+        generate(filename);
       }
-
     }
   })
-
 }
 
 
