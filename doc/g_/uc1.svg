@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="304px" preserveAspectRatio="none" style="width:593px;height:304px;" version="1.1" viewBox="0 0 593 304" width="593px" zoomAndPan="magnify"><defs><filter height="300%" id="fx5q78uv3i1cp" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--entity Admin--><ellipse cx="327.5" cy="18" fill="#FEFECE" filter="url(#fx5q78uv3i1cp)" rx="8" ry="8" style="stroke: #A80036; stroke-width: 2.0;"/><path d="M327.5,26 L327.5,53 M314.5,34 L340.5,34 M327.5,53 L314.5,68 M327.5,53 L340.5,68 " fill="none" filter="url(#fx5q78uv3i1cp)" style="stroke: #A80036; stroke-width: 2.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="82" x="286.5" y="88.5352">Main Admin</text><ellipse cx="327.3912" cy="272.4782" fill="#FEFECE" filter="url(#fx5q78uv3i1cp)" rx="80.3912" ry="18.4782" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="131" x="261.8912" y="277.2224">Use the application</text><!--entity User--><ellipse cx="21.5" cy="18" fill="#FEFECE" filter="url(#fx5q78uv3i1cp)" rx="8" ry="8" style="stroke: #A80036; stroke-width: 2.0;"/><path d="M21.5,26 L21.5,53 M8.5,34 L34.5,34 M21.5,53 L8.5,68 M21.5,53 L34.5,68 " fill="none" filter="url(#fx5q78uv3i1cp)" style="stroke: #A80036; stroke-width: 2.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="31" x="6" y="88.5352">User</text><ellipse cx="112.6274" cy="49.659" fill="#FEFECE" filter="url(#fx5q78uv3i1cp)" rx="25.6274" ry="14.659" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="32" x="96.6274" y="54.4031">Start</text><path d="M404,37 L404,45.5 L368.55,49.5 L404,53.5 L404,62.3105 A0,0 0 0 0 404,62.3105 L547,62.3105 A0,0 0 0 0 547,62.3105 L547,47 L537,37 L404,37 A0,0 0 0 0 404,37 " fill="#FBFB77" filter="url(#fx5q78uv3i1cp)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M537,37 L537,47 L547,47 L537,37 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="122" x="410" y="54.5684">This is an example.</text><path d="M443.5,252 L443.5,268.5 L408.08,272.5 L443.5,276.5 L443.5,292.6211 A0,0 0 0 0 443.5,292.6211 L581.5,292.6211 A0,0 0 0 0 581.5,292.6211 L581.5,262 L571.5,252 L443.5,252 A0,0 0 0 0 443.5,252 " fill="#FBFB77" filter="url(#fx5q78uv3i1cp)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M571.5,252 L571.5,262 L581.5,262 L571.5,252 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="97" x="449.5" y="269.5684">A note can also</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="117" x="449.5" y="284.8789">be on several lines</text><path d="M59.5,151 L59.5,191.6211 L223.5,191.6211 L223.5,161 L213.5,151 L59.5,151 " fill="#FBFB77" filter="url(#fx5q78uv3i1cp)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M213.5,151 L213.5,161 L223.5,161 L213.5,151 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="143" x="65.5" y="168.5684">This note is connected</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="115" x="65.5" y="183.8789">to several objects.</text><!--link User to Start--><path d="M37.14,49.5 C52.04,49.5 66.94,49.5 81.84,49.5 " fill="none" id="User-Start" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="86.89,49.5,77.89,45.5,81.89,49.5,77.89,53.5,86.89,49.5" style="stroke: #A80036; stroke-width: 1.0;"/><!--link User to Use--><path d="M16.53,91.05 C15.03,122.32 18.43,164.72 42.5,192 C70.67,223.92 181.86,247.84 256.74,260.73 " fill="none" id="User-Use" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="262.07,261.64,253.8731,256.1801,257.1415,260.7972,252.5245,264.0657,262.07,261.64" style="stroke: #A80036; stroke-width: 1.0;"/><!--link Admin to Use--><path d="M296.51,91.03 C283.96,137.78 286.16,212.91 303.09,249.74 " fill="none" id="Admin-Use" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="305.46,254.46,305.0002,244.6219,303.2182,249.9907,297.8494,248.2087,305.46,254.46" style="stroke: #A80036; stroke-width: 1.0;"/><!--link Admin to Use--><path d="M317.37,91.03 C313.3,137.36 313.97,211.54 319.37,248.71 " fill="none" id="Admin-Use-1" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="320.2,253.92,322.7375,244.4036,319.4151,248.982,314.8367,245.6596,320.2,253.92" style="stroke: #A80036; stroke-width: 1.0;"/><!--link Admin to Use--><path d="M338.23,91.03 C342.53,137.36 341.82,211.54 336.11,248.71 " fill="none" id="Admin-Use-2" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="335.23,253.92,340.6667,245.7077,336.0589,248.9892,332.7775,244.3814,335.23,253.92" style="stroke: #A80036; stroke-width: 1.0;"/><!--link Admin to Use--><path d="M359.09,91.03 C371.91,137.9 369.63,213.3 352.25,250.02 " fill="none" id="Admin-Use-3" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="349.82,254.72,357.4942,248.5469,352.1074,250.2739,350.3804,244.8871,349.82,254.72" style="stroke: #A80036; stroke-width: 1.0;"/><!--link Start to N2--><path d="M115.83,64.27 C120.97,85.57 130.89,126.59 136.78,150.96 " fill="none" id="Start-N2" style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><!--link N2 to Use--><path d="M178.25,192.06 C212.97,210.54 264.46,237.95 296.98,255.26 " fill="none" id="N2-Use" style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><!--
+@startuml
+
+:Main Admin: as Admin
+(Use the application) as (Use)
+
+User -> (Start)
+User - -> (Use)
+
+Admin - - -> (Use)
+Admin - - -> (Use)
+Admin - - -> (Use)
+Admin - - -> (Use)
+
+note right of Admin : This is an example.
+
+note right of (Use)
+A note can also
+be on several lines
+end note
+
+note "This note is connected\nto several objects." as N2
+(Start) .. N2
+N2 .. (Use)
+@enduml
+
+PlantUML version 1.2019.06(Fri May 24 19:10:25 CEST 2019)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 11.0.16.1+0
+Operating System: Mac OS X
+OS Version: 12.5.1
+Default Encoding: UTF-8
+Language: en
+Country: NO
+--></g></svg>

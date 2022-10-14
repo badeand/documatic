@@ -5,8 +5,6 @@ var plantuml = require('node-plantuml');
 
 console.log("Running")
 
-const directoryPath = path.join(__dirname, 'doc');
-
 
 const state = {
   watchedFiles: []
@@ -31,25 +29,50 @@ function logGeneration(filename, targetExtension) {
 }
 
 function generatePlantUML(filename, sourceExtension, format, targetExtension) {
-  let basename = filename.substr(0, filename.length - sourceExtension.length - 1);
+
+  let shortname = path.basename(filename).split(".")[0];
+
+  let dir = path.dirname(filename)
+  let gendir = path.join(dir, "g_");
+  if (!fs.existsSync(gendir)) {
+    fs.mkdirSync(gendir)
+  }
+
+  targetFile = `${path.join(gendir, shortname)}.${targetExtension}`
   deleteIfExist(path);
   var gen = plantuml.generate(filename, {format: format})
-  gen.out.pipe(fs.createWriteStream(`${basename}.${targetExtension}`))
+  gen.out.pipe(fs.createWriteStream(targetFile))
   logGeneration(filename, targetExtension);
 }
 
 function generate(filename, sourceExtension) {
+
+
   generatePlantUML(filename, sourceExtension, 'svg', 'svg');
   generatePlantUML(filename, sourceExtension, 'png', 'png');
 }
 
-function update() {
-  const files = fs.readdirSync(directoryPath)
-
+function traverse(dir, a) {
+  const files = fs.readdirSync(dir)
   files.forEach(function (file) {
-    let filename = path.join(directoryPath, file);
+    let filename = path.join(dir, file);
     let lstatSync = fs.lstatSync(filename);
+    if (lstatSync.isDirectory()) {
+      traverse(filename, a)
+    }
+    if (lstatSync.isFile()) {
+      a.push(filename)
+    }
+  });
+}
 
+function update(dir) {
+
+  allfiles = []
+  traverse(dir, allfiles);
+
+  allfiles.forEach(filename => {
+    let lstatSync = fs.lstatSync(filename);
     if (lstatSync.isFile()) {
 
       let sourceExtension = filename.split(".").pop().toLowerCase()
@@ -79,14 +102,16 @@ function update() {
       }
 
     }
+  })
 
-  });
 }
 
-update()
+
+let base = path.join(__dirname, 'doc');
+update(base)
 setInterval(a => {
-  update()
-}, 1500,);
+  update(base)
+}, 1500,)
 
 // fs.writeFileSync(statefile, JSON.stringify(state, null, 2));
 

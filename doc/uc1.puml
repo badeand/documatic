@@ -10,6 +10,7 @@ User --> (Use)
 Admin ---> (Use)
 Admin ---> (Use)
 Admin ---> (Use)
+Admin ---> (Use)
 
 note right of Admin : This is an example.
 
