@@ -1,9 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 var crypto = require('crypto');
-var plantuml = require('node-plantuml');
-var pandoc = require('node-pandoc');
-var sleep = require('system-sleep');
+const {execSync} = require("child_process");
 
 const state = {
   watchedFiles: []
@@ -13,7 +11,6 @@ function extension(filename) {
   return filename.split(".").pop().toLowerCase();
 }
 
-
 function deleteIfExist(path1) {
   try {
     fs.unlinkSync(path1)
@@ -21,8 +18,8 @@ function deleteIfExist(path1) {
   }
 }
 
-function logGeneration(filename, targetExtension) {
-  console.log(`[GENERATE]    ${filename} -> ${targetExtension}`);
+function logGeneration(filename, targetExtension, status) {
+  console.log(`[GENERATE] ${status} ${filename} -> ${targetExtension}`);
 }
 
 
@@ -37,39 +34,51 @@ function getTargetFile(filename, targetExtension) {
   return `${path.join(gendir, shortname)}.${targetExtension}`
 }
 
+function targetDirectory(filename) {
+  let gendir = path.join(path.dirname(filename), "g_");
+  return gendir;
+}
+
 function generatePlantUML(filename, format, targetExtension) {
+  logGeneration(filename, targetExtension, "in progress");
   const targetFile = getTargetFile(filename, targetExtension);
-  // deleteIfExist(targetFile);
-  var gen = plantuml.generate(filename, {format: format})
-  let writeStream = fs.createWriteStream(targetFile);
-  gen.out.pipe(writeStream)
-  finished = false;
-
-  gen.out.on('end', function () {
-    finished = true;
-  });
-
-  while (!finished) {
-    sleep(100);
-  }
-
-  logGeneration(filename, targetExtension);
+  deleteIfExist(targetFile);
+  let targetDir = targetDirectory(filename);
+  execSync(`plantuml ${filename} -t${targetExtension} -o ${targetDir}`);
+  logGeneration(filename, targetExtension, "done");
 }
 
 function generatePandoc(mdTargetFile, filename, targetExtension) {
+  logGeneration(filename, targetExtension, "in progress");
   src = mdTargetFile;
-  const docxTargetFile = getTargetFile(filename, targetExtension);
-  args = ['-f', 'markdown', '-t', targetExtension, '-o', docxTargetFile];
-  callback = function (err, result) {
-    if (err) {
-      console.error(err);
+  const targetfile = getTargetFile(filename, targetExtension);
+  execSync(`pandoc -s ${mdTargetFile} -f markdown -t ${targetExtension} -o "${targetfile}"`)
+  logGeneration(filename, targetExtension, "done")
+
+}
+
+function inlineMarkdownIncludes(contents, regexp, filename) {
+  let results = contents.matchAll(regexp);
+  for (let result of results) {
+    linkTrgt = result[1];
+    let trgt = path.join(path.dirname(path.resolve(filename)), linkTrgt);
+    if (trgt.split(".").pop() === "md") {
+      tag = result[0];
+      let childContents = fs.readFileSync(trgt, 'utf8').toString();
+      contents = contents.replaceAll(tag, childContents)
     }
-    logGeneration(filename, targetExtension)
-    return result;
-  };
-  pandoc(src, args, callback);
+  }
+  return contents
+}
 
-
+function convertImagesLinksToAbsolute(contents, regexp, filename) {
+  let results = contents.matchAll(regexp);
+  for (let result of results) {
+    linkTrgt = result[1];
+    let trgt = path.join(path.dirname(path.resolve(filename)), linkTrgt);
+    contents = contents.replaceAll(linkTrgt, trgt)
+  }
+  return contents;
 }
 
 function generate(filename) {
@@ -78,29 +87,20 @@ function generate(filename) {
 
   if (ext === "puml") {
     generatePlantUML(filename, 'svg', 'svg');
-    generatePlantUML(filename, 'png', 'png');
+    // generatePlantUML(filename, 'png', 'png');
   }
 
-
   if (ext === "md") {
-
-    let contents = fs.readFileSync(filename, 'utf8').toString();
     let regexp = /!\[\]\((.*\.[a-zA-Z]*)\)/g;
-    let results = contents.matchAll(regexp);
-    for (let result of results) {
-      linkTrgt = result[1];
-      let trgt = path.join(path.dirname(path.resolve(filename)), linkTrgt);
-      console.log(trgt)
-      let relative = path.relative(filename, trgt);
-      contents = contents.replaceAll(linkTrgt, trgt)
-    }
+    var contents = fs.readFileSync(filename, 'utf8').toString();
+    contents = inlineMarkdownIncludes(contents, regexp, filename);
+    contents = convertImagesLinksToAbsolute(contents, regexp, filename);
 
     const mdTargetFile = getTargetFile(filename, "md");
     fs.writeFileSync(mdTargetFile, contents);
-    logGeneration(filename, "md")
+    logGeneration(filename, "md", "done")
     generatePandoc(mdTargetFile, filename, "docx");
     generatePandoc(mdTargetFile, filename, "pdf");
-
   }
 
 }
@@ -165,7 +165,6 @@ function update(dir) {
     }
   })
 
-  // console.log(filesOfInterest)
 }
 
 
