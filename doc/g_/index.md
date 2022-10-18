@@ -1,39 +1,19 @@
 
 
 
-# Hello everybody!
+# Documatic
 
-This is a test.
+Documatic is a tool that automatically generates binary documents and images based on markdown dokuments and PlanUML diagrams.
 
-Will it work?
-
-| **kol1** | **kol2** |
-|----------|----------|
-| val1     | val2     |
-| val3     | val4     |
-| val5     | val6     |
+The tool helps to make document authoring more effective by eliminating the need to manually generate image and document files.
 
 
-## GUI
-![](/Users/badeand/dev/documatic/doc/d2/g_/gui3.svg)
+## Tools
 
-## Use case diagram:
+![](/Users/badeand/dev/documatic/doc/g_/tools.svg)
 
-![](/Users/badeand/dev/documatic/doc/g_/uc1.svg)
+## Aggregations
 
+![](/Users/badeand/dev/documatic/doc/g_/aggregation.svg)
 
-
-## Work breakdown structure:
-![](/Users/badeand/dev/documatic/doc/g_/wbs1.svg)
-
-
-
-
-## Child document
-In general, I find that a single R Markdown file quickly becomes unwieldy. I recommend breaking the document up into multiple “child” documents and sourcing these child documents in a parent document. My child documents generally represent major subsections of the document.
-
-
-![](/Users/badeand/dev/documatic/doc/g_/gui3.svg)
-
-I prefer to store the parent R Markdown file in a folder labeled “markdown” (rproject/markdown) and the child R Markdown files in a sub-directory of my “markdown” folder called “sections” (rproject/markdown/sections). In the parent file, the child files are sourced within the code chunk header using child = ```sections/example.Rmd```. After sourcing all the child chunks, the parent file can be knit (compiled) like a normal R markdown document. The child documents cannot be run in the parent file.
 

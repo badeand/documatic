@@ -1,29 +1,10 @@
 
 
 
-# Hello everybody!
+# Documatic
 
-This is a test.
+Documatic is a tool that automatically generates binary documents and images based on markdown dokuments and PlanUML diagrams.
 
-Will it work?
+The tool helps to make document authoring more effective by eliminating the need to manually generate image and document files.
 
-| **kol1** | **kol2** |
-|----------|----------|
-| val1     | val2     |
-| val3     | val4     |
-| val5     | val6     |
-
-
-## GUI
-![](./d2/g_/gui3.svg)
-
-## Use case diagram:
-
-![](./g_/uc1.svg)
-
-
-
-## Work breakdown structure:
-![](./g_/wbs1.svg)
-
-![](./d2/child.md)
+![](./tools/tools.md)

@@ -1,0 +1,12 @@
+@startuml
+digraph foo {
+  node [style=rounded]
+  puml  [shape=box,label="PlantUML\nexecutable"]
+  documatic   [shape=box,label="Documatic\nexecutable"]
+  pandoc   [shape=box,label="Pandoc\nexecutable"]
+
+  documatic -> pandoc [taillabel = "executes"]
+  documatic -> puml [taillabel = "executes"]
+
+}
+@enduml

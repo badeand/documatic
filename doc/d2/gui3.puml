@@ -1,8 +1,0 @@
-@startuml
-'https://plantuml.com/salt
-
-salt
-{
-  Just plain text!!
-}
-@enduml
