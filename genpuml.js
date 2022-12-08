@@ -6,7 +6,7 @@ const targetDirectory = require('./common.js').targetDirectory;
 
 const {execSync} = require("child_process");
 
-function generatePlantUML(filename, format, targetExtension) {
+async function generatePlantUML(filename, format, targetExtension) {
     logGeneration(filename, targetExtension, "in progress");
     const targetFile = getTargetFile(filename, targetExtension);
     deleteIfExist(targetFile);

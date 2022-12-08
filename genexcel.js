@@ -1,5 +1,6 @@
 const Excel = require('exceljs');
 const fs = require("fs");
+const systemSleep = require('system-sleep');
 const logGeneration = require('./common.js').logGeneration;
 const getTargetFile = require('./common.js').getTargetFile;
 const deleteIfExist = require('./common.js').deleteIfExist;
@@ -7,14 +8,23 @@ const targetDirectory = require('./common.js').targetDirectory;
 
 async function readExcel(filename) {
 
-    let workbook = await new Excel.Workbook().xlsx.readFile(filename);
+    new Excel.Workbook().xlsx.readFile(filename).then(workbook =>
 
-    workbook.worksheets.forEach(worksheet => {
-        let lastpart = lastPart(worksheet);
-        if (lastpart === "md") {
-            extractTable(workbook, worksheet.name);
-        }
-    })
+
+        workbook.worksheets.forEach(worksheet => {
+            let lastpart = lastPart(worksheet);
+            if (lastpart === "md") {
+                extractTable(workbook, worksheet.name);
+            }
+            if (lastpart === "f") {
+                console.log(`found formatted sheet: ${worksheet.name}`)
+                extractFormattedSheet(workbook, worksheet.name);
+            }
+        })
+
+    );
+
+
 }
 
 
@@ -22,6 +32,45 @@ function lastPart(worksheet) {
     let parts = worksheet.name.split("_");
     let lastpart = parts.length > 1 && parts.pop();
     return lastpart;
+}
+
+function extractFormattedSheet(workbook, sheetName) {
+    const worksheet = workbook.getWorksheet(sheetName);
+    var lines = []
+
+    var row = 1;
+    while (row < 9999) {
+        const values = [];
+        contents = false;
+        characterRange('A', 'X').forEach(colName => {
+            const cellValue = getCellValue(worksheet, colName, row);
+            if (cellValue) {
+
+                values.push(cellValue)
+                contents = true;
+            }
+        })
+
+        if (contents) {
+            lines.push(values.join(' '));
+
+        }
+        row++;
+    }
+
+    console.log("")
+
+    let fileContents = lines.join("\n");
+    console.log(fileContents)
+    console.log("done")
+
+    let parts = worksheet.name.split("_");
+    let extension = parts[parts.length - 2];
+    parts.pop();
+    parts.pop();
+    const filename = parts.join("_");
+
+    const mdFilename = writeFile(filename, fileContents, extension);
 }
 
 function extractTable(workbook, sheetName) {
@@ -68,10 +117,16 @@ function extractTable(workbook, sheetName) {
 
     console.log("")
 
-    let md = lines.join("\n");
-    console.log(md)
+    let fileContents = lines.join("\n");
+    console.log(fileContents)
     console.log("done")
-    const mdFilename = writeMarkdown(sheetName, md);
+
+    let parts = worksheet.name.split("_");
+    parts.pop();
+    const filename = parts.join("_");
+
+
+    const mdFilename = writeFile(filename, fileContents, "md");
 }
 
 
@@ -135,12 +190,12 @@ function getCellValue(worksheet, colName, rowName) {
 }
 
 
-function writeMarkdown(sheetName, md) {
-    let mdFilename = `${sheetName}.md`;
-    const targetFile = getTargetFile(mdFilename, "md");
+function writeFile(sheetName, content, extension) {
+    let mdFilename = `${sheetName}.${extension}`;
+    const targetFile = getTargetFile(mdFilename, extension);
     deleteIfExist(targetFile);
-    fs.writeFileSync(targetFile, md);
+    fs.writeFileSync(targetFile, content);
     return mdFilename;
-  }
+}
 
 module.exports = { readExcel }
