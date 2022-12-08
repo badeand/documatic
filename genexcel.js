@@ -1,9 +1,13 @@
 const Excel = require('exceljs');
 const fs = require("fs");
+const logGeneration = require('./common.js').logGeneration;
+const getTargetFile = require('./common.js').getTargetFile;
+const deleteIfExist = require('./common.js').deleteIfExist;
+const targetDirectory = require('./common.js').targetDirectory;
 
-async function readExcel() {
+async function readExcel(filename) {
 
-    let workbook = await new Excel.Workbook().xlsx.readFile(`testfile1.xlsx`);
+    let workbook = await new Excel.Workbook().xlsx.readFile(filename);
 
     workbook.worksheets.forEach(worksheet => {
         let lastpart = lastPart(worksheet);
@@ -63,12 +67,6 @@ function extractTable(workbook, sheetName) {
     }
 
     console.log("")
-
-
-    /*
-      line.push(cell.result)
-      lines.push(line)
-    */
 
     let md = lines.join("\n");
     console.log(md)
@@ -139,7 +137,9 @@ function getCellValue(worksheet, colName, rowName) {
 
 function writeMarkdown(sheetName, md) {
     let mdFilename = `${sheetName}.md`;
-    fs.writeFileSync(mdFilename, md);
+    const targetFile = getTargetFile(mdFilename, "md");
+    deleteIfExist(targetFile);
+    fs.writeFileSync(targetFile, md);
     return mdFilename;
   }
 
