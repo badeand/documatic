@@ -68,7 +68,6 @@ function extractFormattedSheet(workbook, sheetName) {
     console.log("")
 
     let fileContents = lines.join("\n");
-    console.log(fileContents)
     console.log("done")
 
     let parts = worksheet.name.split("_");
