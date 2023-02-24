@@ -5,6 +5,9 @@ const logGeneration = require('./common.js').logGeneration;
 const getTargetFile = require('./common.js').getTargetFile;
 const deleteIfExist = require('./common.js').deleteIfExist;
 const targetDirectory = require('./common.js').targetDirectory;
+const moment = require('moment');
+
+
 
 async function readExcel(filename) {
 
@@ -27,6 +30,10 @@ async function readExcel(filename) {
 
 }
 
+
+function range(startAt, size) {
+    return [...Array(size).keys()].map(i => i + startAt);
+}
 
 function lastPart(worksheet) {
     let parts = worksheet.name.split("_");
@@ -132,6 +139,11 @@ function extractTable(workbook, sheetName) {
 
 function characterRange(from = 'A', to = 'X') {
     return Array.from(String.fromCharCode(...[...Array(to.charCodeAt(0) - from.charCodeAt(0) + 1).keys()].map(i => i + from.charCodeAt(0))));
+}
+
+
+function countCharInstance( str, c) {
+    [...str].filter(l => l === c).length
 }
 
 function getCellValue(worksheet, colName, rowName) {
