@@ -126,13 +126,8 @@ function extractTable(workbook, sheetName) {
     let fileContents = lines.join("\n");
     console.log(fileContents)
     console.log("done")
+    fs.writeFileSync(`${worksheet.name}.md`, fileContents);
 
-    let parts = worksheet.name.split("_");
-    parts.pop();
-    const filename = parts.join("_");
-
-
-    const mdFilename = writeFile(filename, fileContents, "md");
 }
 
 
@@ -141,7 +136,7 @@ function characterRange(from = 'A', to = 'X') {
 }
 
 
-function countCharInstance( str, c) {
+function countCharInstance(str, c) {
     [...str].filter(l => l === c).length
 }
 
@@ -209,4 +204,8 @@ function writeFile(sheetName, content, extension) {
     return mdFilename;
 }
 
-module.exports = { readExcel }
+module.exports = {
+    readExcel,
+    extractFormattedSheet,
+    extractTable
+}
