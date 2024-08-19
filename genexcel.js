@@ -89,8 +89,9 @@ function extractTable(workbook, sheetName) {
     characterRange('A', 'X').forEach(colName => {
         let rowName = 1;
         let cellValue = getCellValue(worksheet, colName, rowName);
+        const cell = worksheet.getCell(`${colName}${rowName}`)
         if (cellValue) {
-            let alignment = worksheet.getCell(`${colName}${rowName}`).style.alignment;
+            let alignment = cell.style.alignment;
             if (!alignment) {
                 headerLines.push("----")
             } else {
@@ -103,6 +104,7 @@ function extractTable(workbook, sheetName) {
                     headerLines.push("----")
                 }
             }
+            
             tableCols.push(colName)
             headerCells.push(`**${cellValue}**`)
         }
@@ -115,17 +117,21 @@ function extractTable(workbook, sheetName) {
     while (getCellValue(worksheet, `A`, row)) {
         const values = [];
         tableCols.forEach(colName => {
-            values.push(getCellValue(worksheet, colName, row))
+            const cell = worksheet.getCell(`${colName}${row}`)
+            const value = getCellValue(worksheet, colName, row)
+            const bold = cell.style && cell.style.font ? 
+                cell.style.font.bold : false
+            let text = value
+            text = value && bold ? `**${text}**` : text
+            values.push( text )
         })
         lines.push(`|${values.join('|')}|`)
         row++;
     }
 
-    console.log("")
 
     let fileContents = lines.join("\n");
     console.log(fileContents)
-    console.log("done")
     fs.writeFileSync(`${worksheet.name}.md`, fileContents);
 
 }
